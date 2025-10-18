@@ -1,9 +1,70 @@
-import example.pepita
+import provincias.*
+import servicios.*
+import profesionales.*
 
-describe "group of tests for pepita" {
+describe "Etapa 1" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+
+  const uniSanMartin = new Universidad(localizacionPcia = buenosAires, honorariosRecomendados = 3500)
+    
+    const uniRosario = new Universidad(localizacionPcia = santaFe, honorariosRecomendados = 2800)
+
+    const uniCorrientes = new Universidad(localizacionPcia = corrientes, honorariosRecomendados = 4200)
+
+    const uniHurlingham = new Universidad(localizacionPcia = buenosAires, honorariosRecomendados = 8800)
+
+
+    const juana = new Profesional(tipo = vinculado, universidad = uniRosario)
+    const melina = new Profesional(tipo = delLitoral, universidad = uniCorrientes)
+    const rocio = new Profesional(tipo = libres, universidad = uniHurlingham)
+    
+    const luciana = new Profesional(tipo = libres, universidad = uniRosario)
+    
+
+    const cristobalSA = new Empresa(honorarioReferencia = 3500)
+    
+
+  method initialize(){
+    luciana.tipo().nuevoHonorario(3200)
+    luciana.tipo().adherirProvincia(entreRios)
+    luciana.tipo().adherirProvincia(santaFe)
+
+
+    rocio.tipo().nuevoHonorario(5000)
+    rocio.tipo().adherirProvincia(santaFe)
+    rocio.tipo().adherirProvincia(cordoba)
+    rocio.tipo().adherirProvincia(buenosAires)
+    
+
+
+    
+
+    cristobalSA.contratar(juana)
+    cristobalSA.contratar(melina)
+    cristobalSA.contratar(rocio)
+    cristobalSA.contratar(luciana)
   }
 
+  test "dos de sus profesionales estudiaron en Rosario, uno en Hurlingham, ninguno (o sea cero) en San Martín." {
+    self.initialize()
+    assert.equals(2, cristobalSA.estudiadosEnUniversidad(uniRosario))
+    assert.equals(1, cristobalSA.estudiadosEnUniversidad(uniHurlingham))
+    assert.equals(0, cristobalSA.estudiadosEnUniversidad(uniSanMartin))
+  }
+
+  test "como profesionales caros, solamente a Rocío. ¡OJO! el método no va a devolver a Rocío, va a devolver una colección que tiene un solo elemento, que es Rocío." {
+    self.initialize()
+    assert.equals(#{rocio}, cristobalSA.profesionalesCaros())
+  }
+
+
+  test "como universidades formadoras, a las de Rosario, Corrientes y Hurlingham" {
+    self.initialize()
+    assert.equals(#{uniRosario, uniCorrientes, uniHurlingham}, cristobalSA.universidadesFormadoras())
+  }
+
+  test "como profesional más barato a Juana" {
+    self.initialize()
+    assert.equals(juana, cristobalSA.profesionalMasBarato())
+  }
 }
